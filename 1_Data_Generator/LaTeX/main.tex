@@ -53,7 +53,7 @@
 % Full-width abstract
 \renewcommand{\maketitlehookd}{%
 	\begin{abstract}
-		\noindent Applying similarity learning methods in classification problems allows for extremely accurate classification with the downside of longer classification times, however, the tools for supporting such methods of classification are few and far between. This paper explores many different methods in which data generators may be developed for similarity learning algorithms, primarily focused on the Siamese Neural Network architecture.
+		\noindent Similarity learning techniques can be a powerful tool for research and data analysis, however, the tools for supporting such methods of classification are few and far between. This paper explores many different methods in which data generators may be developed for similarity learning algorithms, primarily focused on the Siamese Neural Network architecture.
 	\end{abstract}
 }
 
@@ -76,7 +76,7 @@ As a point of reference, this paper will be focusing on siamese neural networks 
 	\centering
 	\begin{tabular}{l l}
 		\toprule
-		Short & Long \\
+		Term & Definition \\
 		\midrule
         AI/ML & Artificial Intelligence/Machine Learning \\
         SiNN & Siamese Neural Network \\
@@ -91,6 +91,11 @@ AI was originally coined by John McCarthy in 1955, before being further defined 
 
 Now AI is a broad term used to describe just about any learning process being completed by a  computer, however, in simplest terms it is a computer task that creates a function which is trained to predict outputs based on inputs.
 
+A \textbf{batch} is a set of data that is used to train a neural network, where after each set of data the internal model parameters (in Neural Networks it would be weights and biases) are changed. A \textbf{batch size} is then the number of samples in each batch. The purpose of an \textbf{epoch} is then the number of times the model would make a full pass through the entire dataset \autocite{brownlee}.
+Therefore, in an epoch, there may be multiple batches (or batch iterations), and subsequently multiple \textbf{gradient descent steps}.
+
+However, in the case of dynamic generators (ones that don't necessarily represent the entire dataset and are generated dynamically) such as the one this paper, an \textbf{epoch} will describe the number of times a batch is passed to a model, because there will only be one batch iteration, and subsequently one \textbf{gradient descent step} per epoch.
+
 \subsection{What Is Deep Learning?}
 Deep Learning is a more specific branch of AI that is typically associated with multi-layer neural networks (more than 3) also with the purpose of training values to better predict outputs dependent upon inputs.
 
@@ -101,15 +106,7 @@ Similarity is a very specific branch of ML that is used for determining the simi
 A SiNN is a kind of similarity learning approach to comparing images (or other 2D data), and determining their similarity. SiNNs leverage one neural network which is used to classify each individual image, which can then be used to find the euclidean distance and the overall similarity of the images.
 
 %------------------------------------------------
-
-\section{Introduction}
-
-\subsection{Requirements of The Data Generator}
-Many libraries exist now for generating, changing, and augmenting data, however, there has been some amount of underdevelopment in the area of SiNNs, which can in large part be attributed to the lack of data generation for such architecture.
-
-The purpose of this paper is to expose possible methods of data generation for SiNNs, both as a stand alone generator (one that isn't dependent on other AI/ML libraries), as well as one that may interface with the Tensorflow library.
-
-\begin{table*}[ht!] % Full width table (notice the starred environment)
+\begin{table*}[hbt!] % Full width table (notice the starred environment)
 	\caption{Tensorflow arguments for image\_dataset\_from\_directory()}
 	\centering % Horizontally center the table
 	\begin{tabular}{L{0.2\linewidth} L{0.75\linewidth}}
@@ -136,9 +133,16 @@ The purpose of this paper is to expose possible methods of data generation for S
     \label{tab:tensorflow_image_dataset_from_directory}
 \end{table*}
 
+\section{Introduction}
+
+\subsection{Requirements of The Data Generator}
+Many libraries exist now for generating, changing, and augmenting data, however, there has been some amount of underdevelopment in the area of SiNNs, which can in large part be attributed to the lack of data generation or generation tools for such architecture. As the architecture requires data that is formatted in a manner that is different than most other kinds of AI/ML, especially kinds which are not under the umbrella of similarity learning.
+
+The purpose of this paper is to expose possible methods of data generation for SiNNs, both as a stand alone generator (one that isn't dependent on other AI/ML libraries), as well as one that may interface with the Tensorflow library.
+
 \subsection{Arguments / Inputs To The Generator}
 Regarding the development of the generator, this paper seeks to mimic the pre-existing tensorflow function “tf.keras.utils.image\_dataset\_from\_directory”, and match the arguments (Table \ref{tab:tensorflow_image_dataset_from_directory}) that are supported by the aforementioned function\autocite{image_dataset_from_directory} in the Tensorflow integration explained later on. \\
-However, prior to this there will be a stand alone generator developed for the same purpose. The focus, however, of the standalone is to provide a more fundamental understanding of the generator and will use the following limited list arguments:
+However, prior to this there will be a stand alone generator developed for the same purpose. The focus, however, of the standalone is to provide a more fundamental understanding of the generator and will use the following limited list of arguments:
 \begin{itemize}[noitemsep,topsep=-8pt]
 	\item directory
 	\item batch\_size
@@ -183,7 +187,7 @@ The output of the stand alone generator will them be the following: (images, lab
 
 The key difference can be found with "learning\_size" in the tensor shape of "images", where "learning\_size" represents the number of images being used in parallel for the learning process as seen in (Figure \ref{fig:parallel}). For example, it would makes sense for a triplet loss similarity learning architecture, the learning\_size would be 3, as there are 3 images being used in parallel for the learning process. However, this variable allows for other architectures to be supported as well. 
 
-\begin{figure}[hbt!] % Single column figure
+\begin{figure} % Single column figure
 	\includegraphics[width=\linewidth]{Triplet.png}
 	\caption{An illustration of triplet loss for SiNNs, resulting in a "learning\_size" = 2. Source: \autocite{craeymeersch}.}
 	\label{fig:triplet}
@@ -197,7 +201,7 @@ The initial attempt towards tackling this challenge was anchored in the idea of 
 
 \begin{figure*} % Single column figure
 	\includegraphics[width=\linewidth]{initial.png}
-	\caption{An illustration of triplet loss for SiNNs, resulting in a "learning\_size" = 2. Source: \autocite{craeymeersch}.}
+	\caption{The initial Python code for developing a generator for Siamese Neural Networks.}
 	\label{fig:initial}
 \end{figure*}
 
@@ -230,6 +234,9 @@ Assuming that within the main directory we see 5 folders representing classes, e
 % AKA a general solution to this being ___
 
 Additionally, in the case of smaller datasets, it will lead to a lot of unnecessary loops, especially, if we are interested in getting a unique pair of images, and not one the model has already seen.
+
+% It also doesn't yield sequentially
+
 
 % Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque. Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque.
 % 
