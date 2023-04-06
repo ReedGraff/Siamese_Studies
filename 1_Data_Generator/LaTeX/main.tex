@@ -195,8 +195,9 @@ The key difference can be found with "learning\_size" in the tensor shape of "im
 
 Additionally, "labels" is changed to a different shape to also allow for other architectures to be supported. For example, if the architecture is a triplet loss similarity learning architecture, the labels would be of shape (batch\_size, 2), where the first column represents the similarity of the first image (the anchor) to the second image, and the second column represents the similarity of the first image (the anchor) to the third image. Meanwhile in a case where the learning\_size is 2, the labels would be of shape (batch\_size, 1), where the first column represents the similarity of the first image (the anchor) to the second image.
 
-\section{Initial Attempt}
+\section{Initial Approaches}
 
+\subsection{Permutation Approach}
 The initial attempt towards tackling this challenge was anchored in the idea of iterating through the directory, and producing every possible combination of images, this is accomplished by the code in Figure \ref{fig:initial}.
 
 \begin{figure*} % Single column figure
@@ -204,6 +205,10 @@ The initial attempt towards tackling this challenge was anchored in the idea of 
 	\caption{The initial Python code for developing a generator for Siamese Neural Networks.}
 	\label{fig:initial}
 \end{figure*}
+
+The approach illustrated in Figure \ref{fig:initial} is a permutation approach, where the generator would iterate through the directory, and produce every possible combination of images. For example, if the directory had 10 images of class 0, 10 images of class 1, and 10 images of class 2 the generator would produce the following combinations:
+% TODO
+
 
 However, this approach is not scalable. % as it would require the entire dataset to be loaded into memory, and would in turn be very slow. % This is because the generator would have to iterate through the entire dataset for every batch, and would have to produce every possible combination of images for every batch. % This is not a viable solution, and thus a different approach was needed.
 
@@ -216,7 +221,7 @@ Firstly, this approach will lead to data heavily biased towards dissimilar image
 		\toprule
 		\multicolumn{2}{c}{Class} \\
 		\cmidrule(r){1-2}
-		Number & Identification & Data Count \\
+		Number (n) & Identification & Data Count (n[l]) \\
 		\midrule
 		0 & Red Oak & 10 \\
 		1 & Cedar & 10 \\
@@ -228,15 +233,41 @@ Firstly, this approach will lead to data heavily biased towards dissimilar image
 	\label{tab:structure}
 \end{table}
 
-Assuming that within the main directory we see 5 folders representing classes, each with 10 images; With a Tuplet loss, and using 1 singular image of a class as an anchor, we can see that there may only be 10 possible positive cases (including pairing the anchor with itself), and 40 possible negative cases. Of course, as we translate across the dataset we will acquire additional positive cases, however, the issue of misrepresentation of the dataset is only exacerbated.  % and that we are using a triplet loss architecture, the generator would produce 10,000 batches, where each batch would contain 3 images, and 2 labels. However, the generator would produce 10,000 batches of 3 images, where 2 of the images are from the same class, and 1 image is from a different class. This is because the generator would produce every possible combination of images, and would not take into account the class of the images. This would lead to the model being trained on a lot of dissimilar images, and would not be a good representation of the dataset.
+Assuming that within the main directory we see 5 folders representing classes, each with 10 images; With a Tuplet loss, and using 1 singular image of a class as an anchor, we can see that there may only be 10 possible positive cases (including pairing the anchor with itself), and 40 possible negative cases. Of course, as we traverse across the dataset we will acquire additional positive cases, however, the issue of misrepresentation of the dataset is only exacerbated.  
+% and that we are using a triplet loss architecture, the generator would produce 10,000 batches, where each batch would contain 3 images, and 2 labels. However, the generator would produce 10,000 batches of 3 images, where 2 of the images are from the same class, and 1 image is from a different class. This is because the generator would produce every possible combination of images, and would not take into account the class of the images. This would lead to the model being trained on a lot of dissimilar images, and would not be a good representation of the dataset.
 
-% This will result ina  total of X positive and Y negative 
+The formulas for finding such values for one anchor image may be seen below:
+
+\[ \alpha = (anchor\_class\_length) \]
+\[ \sum_{n = 0}^4 n[l] - \alpha = (\#\_of\_negatives) \]
+\[ \sum_{n = 0}^4 n[l] - \alpha = (\#\_of\_unique\_negatives) \]
+\[ \alpha = (\#\_of\_positives) \]
+\[ \alpha-1 = (\#\_of\_unique\_positives) \]
+
+Extending this logic, it is also possible to determine these same values when traversing across the entire dataset (AKA the total positive and negative cases or pairs):
+
+\[ \alpha = (anchor\_class\_length) \]
+\[ \sum_{n = 0}^4 n[l] - \alpha = (\#\_of\_negatives) \]
+\[ \sum_{n = 0}^4 n[l] - \alpha = (\#\_of\_unique\_negatives) \]
+\[ \alpha = (\#\_of\_positives) \]
+\[ \alpha-1 = (\#\_of\_unique\_positives) \]
+
+% TODO
+
 % AKA a general solution to this being ___
 
 Additionally, in the case of smaller datasets, it will lead to a lot of unnecessary loops, especially, if we are interested in getting a unique pair of images, and not one the model has already seen.
 
 % It also doesn't yield sequentially
+% Not random, it doesn't support randomization
 
+The reason uniqueness of a pair is important is because if we are interested in training a Siamese Neural Network, we want to ensure that the model is not trained on the same pair of images, as this would lead to the model overfitting to the dataset, and would not be able to generalize well to new data.
+
+Finally, this method doesn't match our requirements, nor does it yield data sequentially, it produces 2 datasets, one being x\_train, and the other being y\_train.
+
+\subsection{Combination Approach}
+
+Using combinations as opposed to permutations allows for
 
 % Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque. Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque.
 % 
