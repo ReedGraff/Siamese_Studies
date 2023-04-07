@@ -381,7 +381,7 @@ Additionally, in the case of smaller datasets, it will lead to a lot of unnecess
 % It also doesn't yield sequentially
 % Not random, it doesn't support randomization
 
-\subsection{The Importance of Unique Pairs}
+\subsection{The Importance Of Order And Unique Pairs}
 
 \begin{figure} % Single column figure
 	\includegraphics[width=\linewidth]{Triplet_Loss.png}
@@ -393,18 +393,35 @@ There is, naturally, a belief that it would be good practice to compare an ancho
 However, this leads to an artificial inflation of the accuracy of the model. Figure \ref{fig:tripletsemihardloss} illustrates this very well; If we compare an image to itself, there is no distance between the data points, as they would lie right on top of each other.
 Therefore, in any model architecture, it is bad practice to compare an image to itself (without any augmentations).
 
+% There should be an image supporting this...
 However, outside of the issue of comparing images to themselves, there is another issue of uniqueness of pairs.
 In a model architecture where learning\_size = 2, there is a potential to have an anchor correspond to one image\_1 where it is in a positive pair with image\_2. Later on, this pair may be flipped, where image\_2 is now in the anchor in a positive pair with image\_1.
 
+% TODO
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{Triplet_Margin.png}
+	\caption{An illustration of margin as it effects triplet loss. Source: \autocite{yusuf_sar}.}
+	\label{fig:triplet_margin}
+\end{figure}
 
-% You can't compare something to itself, it will end in a euclidean distance of 0, giving a false sense of accuracy.
-% in a quadruplet loss, you cant have 2 images that are the same, because it will end in a change of embedding that will lean in a way that is unrepresentative of the actual data
- 
+One of the many benefits of triplet loss is its ability to manage inter-class variances, because it isn't forced to bring embedded images into one point, rather just distanced from negative data points by a margin\autocite{yusuf_sar}.
+
+You can't compare something to itself, it will end in a euclidean distance of 0, giving a false sense of accuracy.
+in a quadruplet loss, you cant have 2 images that are the same, because it will end in a change of embedding that will lean in a way that is unrepresentative of the actual data
+% TODO
+
 The reason uniqueness of a pair is important is because if we are interested in training a Siamese Neural Network, we want to ensure that the model is not trained on the same pair of images, as this would lead to the model overfitting to the dataset, and would not be able to generalize well to new data.
 
 So how can we ensure uniqueness? Through a combination approach, this is possible.
 
 Finally, this method doesn't match our requirements, nor does it yield data sequentially, it produces 2 datasets, one being x\_train, and the other being y\_train.
+
+\begin{figure*}[hbt!] % Single column figure
+	\centering
+    \includegraphics[width=0.6\linewidth]{Forced.png}
+	\caption{The second Python script for developing a generator for Siamese Neural Networks.}
+	\label{fig:forced}
+\end{figure*}
 
 \subsection{Combination Approach}
 
