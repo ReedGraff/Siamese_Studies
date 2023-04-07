@@ -29,7 +29,7 @@
 
 \addbibresource{sample.bib} % BibLaTeX bibliography file
 
-\runninghead{Shortened Running Article Title} % A shortened article title to appear in the running head, leave this command empty for no running head
+\runninghead{Similarity Learning and Data Generators} % A shortened article title to appear in the running head, leave this command empty for no running head
 
 \footertext{\textit{UT Austin} (2023)} % Text to appear in the footer, leave this command empty for no footer text
 
@@ -53,7 +53,7 @@
 % Full-width abstract
 \renewcommand{\maketitlehookd}{%
 	\begin{abstract}
-		\noindent Similarity learning techniques can be a powerful tool for research and data analysis, however, the tools for supporting such methods of classification are few and far between. This paper explores many different methods in which data generators may be developed for similarity learning algorithms, primarily focused on the Siamese Neural Network architecture.
+		\noindent Similarity learning techniques can be a powerful tool for research and data analysis, however, the tools for supporting such methods are few and far between. This paper explores many different methods in which data generators may be developed for similarity learning algorithms, primarily focused on the Siamese Neural Network architecture.
 	\end{abstract}
 }
 
@@ -95,6 +95,8 @@ A \textbf{batch} is a set of data that is used to train a neural network, where 
 Therefore, in an epoch, there may be multiple batches (or batch iterations), and subsequently multiple \textbf{gradient descent steps}.
 
 However, in the case of dynamic generators (ones that don't necessarily represent the entire dataset and are generated dynamically) such as the one this paper, an \textbf{epoch} will describe the number of times a batch is passed to a model, because there will only be one batch iteration, and subsequently one \textbf{gradient descent step} per epoch.
+
+\textbf{overfitting and training}
 
 \subsection{What Is Deep Learning?}
 Deep Learning is a more specific branch of AI that is typically associated with multi-layer neural networks (more than 3) also with the purpose of training values to better predict outputs dependent upon inputs.
@@ -185,11 +187,11 @@ The output of the stand alone generator will them be the following: (images, lab
 	\label{fig:parallel}
 \end{figure}
 
-The key difference can be found with "learning\_size" in the tensor shape of "images", where "learning\_size" represents the number of images being used in parallel for the learning process as seen in (Figure \ref{fig:parallel}). For example, it would makes sense for a triplet loss similarity learning architecture, the learning\_size would be 3, as there are 3 images being used in parallel for the learning process. However, this variable allows for other architectures to be supported as well. 
+The key difference can be found with "learning\_size" in the tensor shape of "images", where "learning\_size" represents the number of images being used in parallel for the learning process as seen in (Figure \ref{fig:parallel}). It effectively denotes the kind of architecture it may be, and is denoted in other papers as "k" in k-tuplet \autocite{li_yu_fu_fang_heng}. For example, it would makes sense for a triplet loss similarity learning architecture, the learning\_size would be 3, as there are 3 images being used in parallel for the learning process. However, this variable allows for other architectures to be supported as well. 
 
 \begin{figure} % Single column figure
 	\includegraphics[width=\linewidth]{Triplet.png}
-	\caption{An illustration of triplet loss for SiNNs, resulting in a "learning\_size" = 2. Source: \autocite{craeymeersch}.}
+	\caption{An illustration of triplet loss for SiNNs, resulting in a "learning\_size" = 3. Source: \autocite{craeymeersch}.}
 	\label{fig:triplet}
 \end{figure}
 
@@ -221,7 +223,7 @@ Firstly, this approach will lead to data heavily biased towards dissimilar image
 		\toprule
 		\multicolumn{2}{c}{Class} \\
 		\cmidrule(r){1-2}
-		Number (n) & Identification & Data Count (n[l]) \\
+		Index (i) & Identification & Data Count (c[i]) \\
 		\midrule
 		0 & Red Oak & 10 \\
 		1 & Cedar & 10 \\
@@ -238,16 +240,27 @@ Assuming that within the main directory we see 5 folders representing classes, e
 
 The formulas for finding such values for one anchor image may be seen below (it should be noted that the (\#\_of\_positives) includes the anchor image being compared to itself):
 
-\[ \alpha = (anchor\_class\_length) \]
-\[ \sum_{n = 0}^4 n[l] - \alpha = (\#\_of\_negatives) \]
-\[ \alpha = (\#\_of\_positives) \]
+\[ \alpha = (anchor\_class\_index) \]
+\[ \sigma  = (number\_of\_class\_indices) \]
+\[ c[\alpha] = (anchor\_class\_length) = (\#\_of\_positives) \]
+\[ (\sum_{i = 0}^\sigma c[i]) - c[\alpha]= (\#\_of\_negatives) \]
 
 Extending this logic, it is also possible to determine these same values when traversing across the entire dataset (AKA the total positive and negative cases or pairs):
 
-\[ \sum_{n = 0}^4 n[l] - \alpha = (\#\_of\_negatives) \]
-\[ \sum_{n = 0}^4 n[l] - \alpha = (\#\_of\_unique\_negatives) \]
-\[ \alpha = (\#\_of\_positives) \]
-\[ \alpha-1 = (\#\_of\_unique\_positives) \]
+\[ \sum_{i = 0}^\sigma (c[i])^2 = (\#\_of\_positives) \]
+\[ \sum_{i_1 = 0}^{\sigma_1}(((\sum_{i_2 = 0}^{\sigma_2} c[i_2]) - c[\alpha]) * c[\alpha]) = (\#\_of\_negatives) \]
+
+% This doesn't work because similarity learning techniques can't really compare an image to itself and move the embedding?
+
+The purpose of appending these formulas to this paper was not only for the sake of explaining the bias towards dissimilar pars or for mathematically explaining each data generator discussed in this paper, but rather to show the scalability of a dataset with similarity learning. Starting with a dataset of only 50 images, a data generator as simple as a permutation approach can produce 2,500 total pairs.
+The scalability of datasets drastically increases with an increase in the variable that is learning\_size. With 
+It is also worth noting that this is entirely in the absence of any data augmentation techniques
+
+% TODO
+
+% Every possible negative pair
+%666 + 666 + 666
+% sum of all (length of every class except for the current class * the length of the current class)
 
 %X 123
 %Y 123
@@ -343,16 +356,50 @@ Extending this logic, it is also possible to determine these same values when tr
 % z3, z3 p
 
 
-
-% TODO
-
 % AKA a general solution to this being ___
+Using the general solutions provided by the perviously stated formulas, we can then solve for the specific values of a single anchor image:
+
+\[ c[\alpha] = 10 \]
+\[ (\sum_{i = 0}^\sigma c[i])- c[\alpha] =  40\]
+
+As well as the values for the entire data set:
+
+\[ \sum_{i = 0}^\sigma (c[i])^2 = 500 \]
+\[ \sum_{i_1 = 0}^{\sigma_1}(((\sum_{i_2 = 0}^{\sigma_2} c[i_2]) - c[i_1]) * c[i_1]) = 2000 \]
+
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{Quintuplet.png}
+	\caption{An illustration of quintuplet architecture, resulting in a "learning\_size" = 5.}
+	\label{fig:quintuplet}
+\end{figure}
+
+Approaching even more complex architectures, more complex data will be required. One example of a more complex system involves a quintuplet learning architecture (Figure \ref{fig:quintuplet}), another paper covers the usage of such architecture \autocite{zhai_huang_cheng_zhan_li_liu}. In order to derive a general solution, the learning\_size must be a variable:
 
 Additionally, in the case of smaller datasets, it will lead to a lot of unnecessary loops, especially, if we are interested in getting a unique pair of images, and not one the model has already seen.
 
 % It also doesn't yield sequentially
 % Not random, it doesn't support randomization
 
+\subsection{The Importance of Unique Pairs}
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{Triplet_Loss.png}
+	\caption{An illustration of triplet loss. Source: \autocite{tripletsemihardloss}.}
+	\label{fig:tripletsemihardloss}
+\end{figure}
+
+There is, naturally, a belief that it would be good practice to compare an anchor image to itself during similarity training. Obviously, if we did compare an anchor to itself it would be a perfect positive case, with a distance between outputs of the model being 0.
+However, this leads to an artificial inflation of the accuracy of the model. Figure \ref{fig:tripletsemihardloss} illustrates this very well; If we compare an image to itself, there is no distance between the data points, as they would lie right on top of each other.
+Therefore, in any model architecture, it is bad practice to compare an image to itself (without any augmentations).
+
+However, outside of the issue of comparing images to themselves, there is another issue of uniqueness of pairs.
+In a model architecture where learning\_size = 2, there is a potential to have an anchor correspond to one image\_1 where it is in a positive pair with image\_2. Later on, this pair may be flipped, where image\_2 is now in the anchor in a positive pair with image\_1.
+
+
+% You can't compare something to itself, it will end in a euclidean distance of 0, giving a false sense of accuracy.
+% in a quadruplet loss, you cant have 2 images that are the same, because it will end in a change of embedding that will lean in a way that is unrepresentative of the actual data
+ 
 The reason uniqueness of a pair is important is because if we are interested in training a Siamese Neural Network, we want to ensure that the model is not trained on the same pair of images, as this would lead to the model overfitting to the dataset, and would not be able to generalize well to new data.
 
 So how can we ensure uniqueness? Through a combination approach, this is possible.
@@ -362,6 +409,9 @@ Finally, this method doesn't match our requirements, nor does it yield data sequ
 \subsection{Combination Approach}
 
 Using combinations as opposed to permutations allows for uniqueness, because order doesn't matter in the case of siamese neural networks
+
+\[ ??? = (\#\_of\_unique\_positives) \]
+\[ ??? = (\#\_of\_unique\_negatives) \]
 
 % Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque. Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque.
 % 
@@ -375,7 +425,7 @@ Using combinations as opposed to permutations allows for uniqueness, because ord
 % 	\caption{Example two column table with fixed-width columns.}
 % 	\centering % Horizontally center the table
 % 	\begin{tabular}{L{0.2\linewidth} L{0.2\linewidth} R{0.15\linewidth}} % Manually specify column alignments with L{}, R{} or C{} and widths as a fixed amount, usually as a proportion of \linewidth
-% 		\toprule
+    % 		\toprule
 % 		\multicolumn{2}{c}{Location} \\
 % 		\cmidrule(r){1-2}
 % 		East Distance & West Distance & Count \\
