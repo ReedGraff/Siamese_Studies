@@ -1,0 +1,33 @@
+Possible conferences and journals to submit to:
+- International Conference on Machine Learning (ICML)
+- International Conference on Pattern Recognition (ICPR)
+- Int. Conf. on Computer Vision and Pattern Recognition (CVPR)
+- Neural Information Processing Systems (NIPS)
+- Int. Con. on Artificial Neural Networks (ICANN)
+- Journal of Machine Learning Research
+- Computational Learning Theory (COLT)
+- AAAI Conference on Artificial Intelligence (AAAI)
+- International Joint Conference on Artificial Intelligence (IJCAI) 
+- IEEE Conference on Computer Vision and Pattern Recognition (CVPR)
+- European Conference on Computer Vision (ECCV) 
+- IEEE International Conference on Computer Vision (ICCV) 
+- International Conference on Machine Learning (ICML) 
+- International Conference on Knowledge Discovery Data Mining (SIGKDD) 
+- Conference on Neural Information Processing Systems (NeurIPS) 
+- Annual Meeting of the Association for Computational Linguistics (ACL)
+- North American Chapter of the Association for Computational Linguistics (NAACL)
+- Conference on Empirical Methods in Natural Language Processing (EMNLP) 
+- International Conference on Research and Development in Information Retrieval- (SIGIR)
+- The Web Conference (WWW)
+
+Possible Peer Reviewers or guides:
+- Scott Douglas
+- karoly@twominutepapers.com
+- https://www.linkedin.com/in/hyundongleee/
+- https://www.linkedin.com/in/yichuanniu/
+- Contributors to Image_From_Dataset
+    - http://eduar.do
+    - haifeng.jin@pm.me
+    - haarisrahman@gmail.com
+    - https://www.linkedin.com/in/guberti/
+    - https://www.linkedin.com/in/thomas-di-martino/
