@@ -197,9 +197,8 @@ The key difference can be found with "learning\_size" in the tensor shape of "im
 
 Additionally, "labels" is changed to a different shape to also allow for other architectures to be supported. For example, if the architecture is a triplet loss similarity learning architecture, the labels would be of shape (batch\_size, 2), where the first column represents the similarity of the first image (the anchor) to the second image, and the second column represents the similarity of the first image (the anchor) to the third image. Meanwhile in a case where the learning\_size is 2, the labels would be of shape (batch\_size, 1), where the first column represents the similarity of the first image (the anchor) to the second image.
 
-\section{Initial Approaches}
-
-\subsection{Permutation Approach}
+\section{Permutation Approach}
+\subsection{Function}
 The initial attempt towards tackling this challenge was anchored in the idea of iterating through the directory, and producing every possible combination of images, this is accomplished by the code in Figure \ref{fig:initial}.
 
 \begin{figure*} % Single column figure
@@ -208,13 +207,35 @@ The initial attempt towards tackling this challenge was anchored in the idea of 
 	\label{fig:initial}
 \end{figure*}
 
-The approach illustrated in Figure \ref{fig:initial} is a permutation approach, where the generator would iterate through the directory, and produce every possible combination of images. For example, if the directory had 10 images of class 0, 10 images of class 1, and 10 images of class 2 the generator would produce the following combinations:
-% TODO
+\subsection{Output}
+The approach illustrated in Figure \ref{fig:initial} is a permutation approach, where the generator would iterate through the directory, and produce every possible permutation of images. For example, if the directory had 2 images of class 0, 2 images of class 1, and 2 images of class 2 the generator would produce the following permutations of the images (where p is a positive pair, and n is a negative pair):
 
+\begin{table}[hbt!] % Single column table
+	\caption{Example pairs from the permutation approach}
+	\centering
+	\begin{tabular}{c c c}
+		\toprule
+        0:0 + 0:0 p & 1:0 + 0:0 n & 2:0 + 0:0 n \\
+        0:0 + 0:1 p & 1:0 + 0:1 n & 2:0 + 0:1 n \\
+        0:0 + 1:0 n & 1:0 + 1:0 p & 2:0 + 1:0 n \\
+        0:0 + 1:1 n & 1:0 + 1:1 p & 2:0 + 1:1 n \\
+        0:0 + 2:0 n & 1:0 + 2:0 n & 2:0 + 2:0 p \\
+        0:0 + 2:1 n & 1:0 + 2:1 n & 2:0 + 2:1 p \\
+        0:1 + 0:0 p & 1:1 + 0:0 n & 2:1 + 0:0 n \\
+        0:1 + 0:1 p & 1:1 + 0:1 n & 2:1 + 0:1 n \\
+        0:1 + 1:0 n & 1:1 + 1:0 p & 2:1 + 1:0 n \\
+        0:1 + 1:1 n & 1:1 + 1:1 p & 2:1 + 1:1 n \\
+        0:1 + 2:0 n & 1:1 + 2:0 n & 2:1 + 2:0 p \\
+        0:1 + 2:1 n & 1:1 + 2:1 n & 2:1 + 2:1 p \\
+		\bottomrule
+	\end{tabular}
+	\label{tab:Example_Pairs}
+\end{table}
 
-However, this approach is not scalable. % as it would require the entire dataset to be loaded into memory, and would in turn be very slow. % This is because the generator would have to iterate through the entire dataset for every batch, and would have to produce every possible combination of images for every batch. % This is not a viable solution, and thus a different approach was needed.
+However, this approach is not scalable. Firstly, this approach does not return a batch of images, but rather the entire dataset. AKA it does not yield sequentially, but rather in one big group.
+Secondly, this approach will lead to data heavily biased towards dissimilar images due to the nature of permutations. For example, look at a directory database that follows the structure shown in Table \ref{tab:structure}.
+% as it would require the entire dataset to be loaded into memory, and would in turn be very slow. % This is because the generator would have to iterate through the entire dataset for every batch, and would have to produce every possible combination of images for every batch. % This is not a viable solution, and thus a different approach was needed.
 
-Firstly, this approach will lead to data heavily biased towards dissimilar images due to the nature of permutations. For example, look at a directory database that follows the structure shown in Table \ref{tab:structure}.
 
 \begin{table}[h!] % Single column table
 	\caption{Example structure of a tree directory dataset.}
@@ -247,7 +268,7 @@ The formulas for finding such values for one anchor image may be seen below (it 
 
 Extending this logic, it is also possible to determine these same values when traversing across the entire dataset (AKA the total positive and negative cases or pairs):
 
-\[ \sum_{i = 0}^\sigma (c[i])^2 = (\#\_of\_positives) \]
+\[ \sum_{i = 0}^\sigma ((c[i])^2) = (\#\_of\_positives) \]
 \[ \sum_{i_1 = 0}^{\sigma_1}(((\sum_{i_2 = 0}^{\sigma_2} c[i_2]) - c[\alpha]) * c[\alpha]) = (\#\_of\_negatives) \]
 
 % This doesn't work because similarity learning techniques can't really compare an image to itself and move the embedding?
@@ -364,7 +385,7 @@ Using the general solutions provided by the perviously stated formulas, we can t
 
 As well as the values for the entire data set:
 
-\[ \sum_{i = 0}^\sigma (c[i])^2 = 500 \]
+\[ \sum_{i = 0}^\sigma ((c[i])^2) = 500 \]
 \[ \sum_{i_1 = 0}^{\sigma_1}(((\sum_{i_2 = 0}^{\sigma_2} c[i_2]) - c[i_1]) * c[i_1]) = 2000 \]
 
 
@@ -374,6 +395,7 @@ As well as the values for the entire data set:
 	\label{fig:quintuplet}
 \end{figure}
 
+\subsection{Analysis}
 Approaching even more complex architectures, more complex data will be required. One example of a more complex system involves a quintuplet learning architecture (Figure \ref{fig:quintuplet}), another paper covers the usage of such architecture \autocite{zhai_huang_cheng_zhan_li_liu}. In order to derive a general solution, the learning\_size must be a variable:
 
 Additionally, in the case of smaller datasets, it will lead to a lot of unnecessary loops, especially, if we are interested in getting a unique pair of images, and not one the model has already seen.
@@ -381,21 +403,29 @@ Additionally, in the case of smaller datasets, it will lead to a lot of unnecess
 % It also doesn't yield sequentially
 % Not random, it doesn't support randomization
 
-\subsection{The Importance Of Order And Unique Pairs}
+% \begin{figure} % Single column figure
+% 	\includegraphics[width=\linewidth]{Triplet_Loss.png}
+% 	\caption{An illustration of triplet loss. Source: \autocite{tripletsemihardloss}.}
+% 	\label{fig:tripletsemihardloss}
+% \end{figure}
 
-\begin{figure} % Single column figure
-	\includegraphics[width=\linewidth]{Triplet_Loss.png}
-	\caption{An illustration of triplet loss. Source: \autocite{tripletsemihardloss}.}
-	\label{fig:tripletsemihardloss}
-\end{figure}
-
+\textbf{The Importance Of Unique Pairs}
 There is, naturally, a belief that it would be good practice to compare an anchor image to itself during similarity training. Obviously, if we did compare an anchor to itself it would be a perfect positive case, with a distance between outputs of the model being 0.
-However, this leads to an artificial inflation of the accuracy of the model. Figure \ref{fig:tripletsemihardloss} illustrates this very well; If we compare an image to itself, there is no distance between the data points, as they would lie right on top of each other.
-Therefore, in any model architecture, it is bad practice to compare an image to itself (without any augmentations).
+However, this leads to an artificial inflation of the accuracy of the model. Figure \ref{fig:triplet_margin} illustrates the margin that is used in triplet loss very well; If we compare an image to itself, there is no distance between the data points (thus no margin), as they would lie right on top of each other.
+Therefore, in any model architecture, it is bad practice to compare an image to itself (without any augmentations, as with augmentation, it is not a bad practice).
 
-% There should be an image supporting this...
+% TODO
+This can be extended in more complex architectures as well:
+In a quadruplet loss, you cant have 2 images that are the same, because it will end in a change of embedding that will lean in a way that is unrepresentative of the actual data
+% You can't compare something to itself, it will end in a euclidean distance of 0, giving a false sense of accuracy.
+
+\textbf{The Importance Of Order}
 However, outside of the issue of comparing images to themselves, there is another issue of uniqueness of pairs.
-In a model architecture where learning\_size = 2, there is a potential to have an anchor correspond to one image\_1 where it is in a positive pair with image\_2. Later on, this pair may be flipped, where image\_2 is now in the anchor in a positive pair with image\_1.
+In a model architecture where learning\_size = 2, there is a potential to have image\_1 (as the first image) where it is in a positive pair with image\_2 (as the second image). Later on, this pair may be flipped, where image\_2 is now the first image, in a positive pair with image\_1 as the second image.
+
+The problem of uniqueness or order is reliant then on the loss function and whether or not it is dependant on order. For example, in the case of contrastive loss, both data points are being drawn towards each other (in a positive case), or away from each other (in a negative case) Resulting in the order not mattering.
+In the case of triplet loss, however, there is not a "side effect of urging to encode anchor and positive samples into the same point in the vector space as in Contrastive Loss"\autocite{yusuf_sar}. The order of the data being passed to the model does matter, as the anchor is still, where the positive data point is moving towards and the anchor, and the negative is moving away from the anchor.
+
 
 % TODO Change image
 \begin{figure} % Single column figure
@@ -403,12 +433,6 @@ In a model architecture where learning\_size = 2, there is a potential to have a
 	\caption{An illustration of margin as it effects triplet loss. Source: \autocite{yusuf_sar}.}
 	\label{fig:triplet_margin}
 \end{figure}
-
-One of the many benefits of triplet loss is its ability to manage inter-class variances, because it isn't forced to bring embedded images into one point, rather just distanced from negative data points by a margin\autocite{yusuf_sar}.
-
-You can't compare something to itself, it will end in a euclidean distance of 0, giving a false sense of accuracy.
-in a quadruplet loss, you cant have 2 images that are the same, because it will end in a change of embedding that will lean in a way that is unrepresentative of the actual data
-% TODO
 
 The reason uniqueness of a pair is important is because if we are interested in training a Siamese Neural Network, we want to ensure that the model is not trained on the same pair of images, as this would lead to the model overfitting to the dataset, and would not be able to generalize well to new data.
 

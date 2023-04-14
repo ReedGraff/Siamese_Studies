@@ -25,6 +25,7 @@ Possible Peer Reviewers or guides:
 - karoly@twominutepapers.com
 - https://www.linkedin.com/in/hyundongleee/
 - https://www.linkedin.com/in/yichuanniu/
+- https://medium.com/@yusufsarigoz
 - Contributors to Image_From_Dataset
     - http://eduar.do
     - haifeng.jin@pm.me
