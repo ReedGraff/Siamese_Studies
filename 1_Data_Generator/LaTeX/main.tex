@@ -454,6 +454,95 @@ Using combinations as opposed to permutations allows for uniqueness, because ord
 \[ ??? = (\#\_of\_unique\_positives) \]
 \[ ??? = (\#\_of\_unique\_negatives) \]
 
+\section{Tensorflow Integration}
+The "correct" method for integrating software into an open-source project is always up for interpretation. Often times there are several perfectly acceptable methods of producing software, and deciding whether one arbitrary integration over another is a matter of opinion.
+
+In my opinion then, I believe that the best method for integrating this data generator into Tensorflow would be to first compress the many existing data generators that already exist into a single class with several subclasses.
+
+\subsection{The Mixed Approach (Recommended)}
+In the mixin approach benefits from its use of subclasses, but eliminates the need for calling the function from the context of a specific generator, by using a single function call.
+The primary function of the this approach would be:
+
+\[ tf.keras.utils.dataset\_from\_directory() \]
+
+Which then takes in a parameter of the generator to be used which would be a subclass of the class \textbf{Generators}.
+
+\subsection{The Subclass Approach}
+The subclasses are kinds of generators, where (image, text, and audio) are the kinds of data that can be passed to the generator, where one of those is passed as a parameter to the class. In usage, these generators would be called in the \textbf{model.fit()} function, as the existing generators are already called.
+
+\[ \_.generate(\_.contrastive, learning\_size=2, ...) \]
+This may also be called with:
+\[ \_.contrastive.generate(learning\_size=2, ...) \]
+
+\subsection{The Mixin Approach}
+
+% https://stackoverflow.com/questions/5647118/is-it-possible-to-do-partial-inheritance-with-python
+
+% class Class2(object):
+%    def method(self):
+%       print ("I am method at %s" % self.__class__)
+% 
+% class Class1(object):
+%    pass
+% 
+% class Class0(Class1):
+%    method = Class2.__dict__["method"]
+% 
+% ob = Class0()
+% ob.method()
+% 
+% Or with Python 3, do this:
+% 
+% method = Class2.method
+
+\subsection{The Dictionary Approach}
+ 
+\subsection{The Dictionary Approach}
+
+\subsection{The String Approach}
+
+
+\begin{figure*}[hbt!] % Single column figure
+	\centering
+    \includegraphics[width=0.6\linewidth]{Forced.png}
+	\caption{The second Python script for developing a generator for Siamese Neural Networks.}
+	\label{fig:directory_dataset_generator}
+\end{figure*}
+
+\subsection{}
+
+% Explain num:num
+
+% image_dataset_from_directory(Data_Structure.triplet_loss)
+% def (Data_Structure.contrastive_loss)
+% 
+% class Data_Structure(object):
+%     def __init__(self, learning_size, classification: (learning_size, int), shuffle: boolean = True):
+%         self.name = name
+%         self.s1 = s1
+%         self.s2 = s2
+%         self.s3 = s3
+%         Triangles.count+= 1
+% 
+%     def calculate(self):
+%         return 0
+% 
+% class contrastive(Data_Structure):
+%     def calculate(self):
+%         self.pm = 0
+%         self.pm = self.s1 + self.s2 + self.s3
+%          
+%     # function to display just the area 
+%     # because it is not extended
+%     def display(self):
+%         return self.pm
+% 
+% def image_dataset_from_directory(structure: Type[tf.Data_Structure] = tf.Data_Structure.contrastive)
+%     structure.calculate()
+
+
+
+
 % Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque. Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque.
 % 
 % %------------------------------------------------

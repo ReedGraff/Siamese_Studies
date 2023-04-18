@@ -27,8 +27,8 @@ Possible Peer Reviewers or guides:
 - https://www.linkedin.com/in/yichuanniu/
 - https://medium.com/@yusufsarigoz
 - Contributors to Image_From_Dataset
-    - http://eduar.do
-    - haifeng.jin@pm.me
-    - haarisrahman@gmail.com
-    - https://www.linkedin.com/in/guberti/
-    - https://www.linkedin.com/in/thomas-di-martino/
+    - [!] http://eduar.do
+    - [!] haifeng.jin@pm.me
+    - [!] haarisrahman@gmail.com
+    - [x] https://www.linkedin.com/in/guberti/
+    - [!] https://www.linkedin.com/in/thomas-di-martino/
