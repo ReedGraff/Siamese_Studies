@@ -1,5 +1,6 @@
 import tensorflow as tf
 from tensorflow import image_dataset_from_directory
+import matplotlib.pyplot as plt
 
 def BasicNN():
     # Create a basic model instance
@@ -23,7 +24,16 @@ def initial_generator(batch_size, ):
 
 def main():
     model = BasicNN()
-    model.fit(image_dataset_from_directory("../Data"), epochs=1)
+    history = model.fit(image_dataset_from_directory("../Data"), epochs=1)
+
+    # plot history
+    plt.plot(history.history['accuracy'], label='accuracy')
+    plt.plot(history.history['loss'], label = 'loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.ylim([0.5, 1])
+    plt.legend(loc='lower right')
+    plt.savefig("history.png")
 
 
 
