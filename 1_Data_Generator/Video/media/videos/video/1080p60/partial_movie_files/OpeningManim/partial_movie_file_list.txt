@@ -1,0 +1,7 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/range/CodingProjects/Python Projects/Data science/ML/Siamese_Studies/1_Data_Generator/Video/media/videos/video/1080p60/partial_movie_files/OpeningManim/1413466013_2732290256_223132457.mp4'
+file 'file:C:/Users/range/CodingProjects/Python Projects/Data science/ML/Siamese_Studies/1_Data_Generator/Video/media/videos/video/1080p60/partial_movie_files/OpeningManim/1672018281_329969645_3386306587.mp4'
+file 'file:C:/Users/range/CodingProjects/Python Projects/Data science/ML/Siamese_Studies/1_Data_Generator/Video/media/videos/video/1080p60/partial_movie_files/OpeningManim/1672018281_1622484134_1979030680.mp4'
+file 'file:C:/Users/range/CodingProjects/Python Projects/Data science/ML/Siamese_Studies/1_Data_Generator/Video/media/videos/video/1080p60/partial_movie_files/OpeningManim/1672018281_329969645_2755699673.mp4'
+file 'file:C:/Users/range/CodingProjects/Python Projects/Data science/ML/Siamese_Studies/1_Data_Generator/Video/media/videos/video/1080p60/partial_movie_files/OpeningManim/1672018281_1981303447_2005568558.mp4'
+file 'file:C:/Users/range/CodingProjects/Python Projects/Data science/ML/Siamese_Studies/1_Data_Generator/Video/media/videos/video/1080p60/partial_movie_files/OpeningManim/1672018281_329969645_2269360973.mp4'
