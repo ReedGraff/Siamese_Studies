@@ -37,7 +37,49 @@ class OpeningManim(Scene):
 
 class myNN(Scene):
     def construct(self):
-        NN = NeuralNetworkMobject([3, 2, 1])
+        title_1 = Tex(r"Hey, I'm Reed Graff")
+        binaries_1 = VGroup(Tex("01010010"), Tex("01100101"), Tex("01100101"), Tex("01100100")).arrange(RIGHT)
+        VGroup(title_1, binaries_1).arrange(DOWN)
+        self.play(
+            Write(title_1),
+            FadeIn(binaries_1, shift=DOWN),
+        )
+        self.wait()
+
+
+
+        title_2 = Tex(r"Hey, I'm Reed Graff")
+        binaries_2 = VGroup(Tex("01010010"), Tex("01100101"), Tex("01100101"), Tex("01100100")).arrange(DOWN)
+        VGroup(title_2, binaries_2).arrange(DOWN)
+        self.play(
+            Transform(title_1, title_2, run_time=2),
+            Transform(binaries_1, binaries_2, run_time=2),
+        )
+        self.wait()
+
+
+
+        binaries_3 = binaries_2.copy()
+        binaries_3[0] = Tex(binaries_3[0].tex_string, " = R").match_y(binaries_3[0])
+        binaries_3[1] = Tex(binaries_3[1].tex_string, " = e").match_y(binaries_3[1])
+        binaries_3[2] = Tex(binaries_3[2].tex_string, " = e").match_y(binaries_3[2])
+        binaries_3[3] = Tex(binaries_3[3].tex_string, " = d").match_y(binaries_3[3])
+
+        self.play(
+            Transform(binaries_2, binaries_3, run_time=2),
+        )
+        self.wait()
+
+        """
+        transform_title = Tex("That was a transform")
+        transform_title.to_corner(UP + LEFT)
+        self.play(
+            Transform(title, transform_title),
+            LaggedStart(*[FadeOut(obj, shift=DOWN) for obj in basel]),
+        )
+        self.wait()
+        
+        NN = NeuralNetworkMobject([1000, 5, 1])
         NN.label_inputs("x")
         NN.label_outputs("\hat{y}")
         NN.label_outputs_text("Output")
@@ -45,6 +87,7 @@ class myNN(Scene):
         NN.scale(0.75)
         self.play(Write(NN))
         self.wait()
+        """
 
 # A customizable Sequential Neural Network
 class NeuralNetworkMobject(VGroup):
@@ -125,7 +168,7 @@ class NeuralNetworkMobject(VGroup):
         layer.add(neurons)
 
         if size > n_neurons:
-            dots = Tex("\\vdots")
+            dots = MathTex("\\vdots")
             dots.move_to(neurons)
             VGroup(*neurons[:len(neurons) // 2]).next_to(
                 dots, UP, MED_SMALL_BUFF
@@ -178,7 +221,7 @@ class NeuralNetworkMobject(VGroup):
     def label_inputs(self, l):
         self.output_labels = VGroup()
         for n, neuron in enumerate(self.layers[0].neurons):
-            label = Tex(f"{l}_"+"{"+f"{n + 1}"+"}")
+            label = MathTex(f"{l}_"+"{"+f"{n + 1}"+"}")
             label.set_height(0.3 * neuron.get_height())
             label.move_to(neuron)
             self.output_labels.add(label)
@@ -188,7 +231,7 @@ class NeuralNetworkMobject(VGroup):
     def label_outputs(self, l):
         self.output_labels = VGroup()
         for n, neuron in enumerate(self.layers[-1].neurons):
-            label = Tex(f"{l}_"+"{"+f"{n + 1}"+"}")
+            label = MathTex(f"{l}_"+"{"+f"{n + 1}"+"}")
             label.set_height(0.4 * neuron.get_height())
             label.move_to(neuron)
             self.output_labels.add(label)
@@ -210,7 +253,7 @@ class NeuralNetworkMobject(VGroup):
         self.output_labels = VGroup()
         for layer in self.layers[1:-1]:
             for n, neuron in enumerate(layer.neurons):
-                label = Tex(f"{l}_{n + 1}")
+                label = MathTex(f"{l}_{n + 1}")
                 label.set_height(0.4 * neuron.get_height())
                 label.move_to(neuron)
                 self.output_labels.add(label)
