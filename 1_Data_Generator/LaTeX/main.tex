@@ -454,6 +454,19 @@ Using combinations as opposed to permutations allows for uniqueness, because ord
 \[ ??? = (\#\_of\_unique\_positives) \]
 \[ ??? = (\#\_of\_unique\_negatives) \]
 
+\subsection{One-Hot Encoding Approach}
+Effectively One-Hot Encode data and then compare... this voids the need for for loops, and is entirely based on randomization...
+
+Input positive and negative distribution / proportion (similar to distributing validation and training data)
+
+As well as batch and epoch data
+
+Then randomly select 1 class, and randomly select a value from that class. Then determine if positive or negative pair, and randomly select a corresponding value from that class.
+
+random values may be dependant on whether or not the model has preprocessing layers... (because if they do then you should be able to self compare... AKA comparing an image to itself is only allowed if there is augmentation)
+
+
+
 \section{Tensorflow Integration}
 The "correct" method for integrating software into an open-source project is always up for interpretation. Often times there are several perfectly acceptable methods of producing software, and deciding whether one arbitrary integration over another is a matter of opinion.
 
@@ -497,7 +510,7 @@ This may also be called with:
 
 \subsection{The Dictionary Approach}
  
-\subsection{The Dictionary Approach}
+\subsection{The \*args Approach}
 
 \subsection{The String Approach}
 
