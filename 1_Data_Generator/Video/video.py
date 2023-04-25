@@ -35,8 +35,11 @@ class OpeningManim(Scene):
         self.wait()
 """
 
+import itertools as it
+
 class myNN(Scene):
     def construct(self):
+        """
         title_1 = Tex(r"Hey, I'm Reed Graff")
         binaries_1 = VGroup(Tex("01010010"), Tex("01100101"), Tex("01100101"), Tex("01100100")).arrange(RIGHT)
         VGroup(title_1, binaries_1).arrange(DOWN)
@@ -46,18 +49,14 @@ class myNN(Scene):
         )
         self.wait()
 
-
-
         title_2 = Tex(r"Hey, I'm Reed Graff")
         binaries_2 = VGroup(Tex("01010010"), Tex("01100101"), Tex("01100101"), Tex("01100100")).arrange(DOWN)
         VGroup(title_2, binaries_2).arrange(DOWN)
         self.play(
-            Transform(title_1, title_2, run_time=2),
-            Transform(binaries_1, binaries_2, run_time=2),
+            ReplacementTransform(title_1, title_2, run_time=2),
+            ReplacementTransform(binaries_1, binaries_2, run_time=2),
         )
         self.wait()
-
-
 
         binaries_3 = binaries_2.copy()
         binaries_3[0] = Tex(binaries_3[0].tex_string, " = R").match_y(binaries_3[0])
@@ -66,10 +65,94 @@ class myNN(Scene):
         binaries_3[3] = Tex(binaries_3[3].tex_string, " = d").match_y(binaries_3[3])
 
         self.play(
-            Transform(binaries_2, binaries_3, run_time=2),
+            ReplacementTransform(binaries_2, binaries_3, run_time=2),
+        )
+        self.wait()
+        """
+        title_1 = Tex(r"So")
+        title_2 = Tex(r"what")
+        title_3 = Tex(r"are")
+        title_4 = Tex(r"Similarity Learning")
+        title_5 = Tex(r"and")
+        title_6 = Tex(r"Data Generators?")
+        section_title = VGroup(title_1, title_2, title_3, title_4, title_5, title_6).arrange(RIGHT)
+        self.play(
+            LaggedStart(
+                *[
+                    Write(title_1, run_time=2),
+                    Write(title_2, run_time=0.5),
+                    Write(title_3, run_time=0.5),
+                    Write(title_4, run_time=2),
+                    Write(title_5, run_time=1),
+                    Write(title_6, run_time=2)
+                ], 
+                lag_ratio=0.5
+            ),
         )
         self.wait()
 
+
+
+        Background = Tex("1. Background")
+        Introduction = Tex("2. Introduction")
+        Permutation = Tex("3. Permutation Approach")
+        Combination = Tex("4. Combination Approach")
+        Tensorflow = Tex("5. Tensorflow Integration")
+        index = VGroup(Background, Introduction, Permutation, Combination, Tensorflow).arrange(DOWN, center=False, aligned_edge=LEFT)
+        section_title_2 = section_title.copy()
+        title_group = VGroup(section_title_2, index).arrange(DOWN).move_to(ORIGIN)
+        self.play(
+            ReplacementTransform(section_title, title_group, run_time=2),
+        )
+        self.wait()
+
+
+
+        Background_2 = Tex("Background")
+        Background_2.to_corner(UL, buff=0.15)
+        self.play(
+            ReplacementTransform(title_group, Background_2, run_time=2),
+        )
+        self.wait()
+
+
+
+        # defines the axes and linear function
+        axes = Axes(x_range=[-1, 10], y_range=[-1, 10], x_length=9, y_length=6)
+        func = axes.plot(lambda x: x, color=BLUE)
+        # creates the T_label
+        t_label = axes.get_T_label(x_val=4, graph=func, label=Tex("x-value"))
+        self.play(
+            Write(axes, run_time=1),
+            Write(func, run_time=2),
+            Write(t_label, run_time=1),
+        )
+        self.wait()
+
+        point = axes.coords_to_point(2, 3)
+        dot = Dot(point)
+        line = axes.get_vertical_line(point, line_config={"dashed_ratio": 0.85})
+        self.play(
+            Write(dot, run_time=1),
+            Write(line, run_time=1),
+        )
+        self.wait()
+
+
+        """
+        section_title_2 = section_title.copy()
+        section_title_2.to_corner(UL, buff=0.25)
+        self.play(
+            Transform(section_title, section_title_2, run_time=2),
+        )
+        self.wait()
+        """
+
+
+
+
+
+        
         """
         transform_title = Tex("That was a transform")
         transform_title.to_corner(UP + LEFT)
