@@ -1,5 +1,6 @@
 from manim import *
 import itertools as it
+import pandas as pd
 
 """
 class OpeningManim(Scene):
@@ -117,6 +118,11 @@ class myNN(Scene):
 
 
 
+        #Data Frame
+        df = pd.read_csv('../../Data/Instagram_Spam/whole.csv', sep=',', header=None)
+
+
+
         # defines the axes and linear function
         axes = Axes(x_range=[-1, 10], y_range=[-1, 10], x_length=9, y_length=6)
         func = axes.plot(lambda x: x, color=BLUE)
@@ -129,9 +135,14 @@ class myNN(Scene):
         )
         self.wait()
 
-        point = axes.coords_to_point(2, 3)
-        dot = Dot(point)
-        line = axes.get_vertical_line(point, line_config={"dashed_ratio": 0.85})
+
+
+        for x,y in zip(df.columns[9], df.columns[10]):
+            point = axes.coords_to_point(x, y)
+            dot = Dot(point)
+            line = axes.get_vertical_line(point, line_config={"dashed_ratio": 0.85})
+
+
         self.play(
             Write(dot, run_time=1),
             Write(line, run_time=1),
