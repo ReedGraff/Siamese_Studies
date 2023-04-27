@@ -120,11 +120,13 @@ class myNN(Scene):
 
         #Data Frame
         df = pd.read_csv('../../Data/Instagram_Spam/whole.csv', sep=',', header=None)
+        followers = [int(x) for x in df[9].tolist()[1:11]]
+        following = [int(x) for x in df[10].tolist()[1:11]]
 
 
 
         # defines the axes and linear function
-        axes = Axes(x_range=[-1, 10], y_range=[-1, 10], x_length=9, y_length=6)
+        axes = Axes(x_range=[min(followers), max(followers)], y_range=[min(following), max(following)], x_length=9, y_length=6)
         func = axes.plot(lambda x: x, color=BLUE)
         # creates the T_label
         t_label = axes.get_T_label(x_val=4, graph=func, label=Tex("x-value"))
@@ -137,15 +139,15 @@ class myNN(Scene):
 
 
 
-        for x,y in zip(df.columns[9], df.columns[10]):
+        dots = VGroup()
+        lines = VGroup()
+        for x,y in zip(followers, following):
             point = axes.coords_to_point(x, y)
-            dot = Dot(point)
-            line = axes.get_vertical_line(point, line_config={"dashed_ratio": 0.85})
-
-
+            dots.add(Dot(point))
+            lines.add(axes.get_vertical_line(point, line_config={"dashed_ratio": 0.85}))
         self.play(
-            Write(dot, run_time=1),
-            Write(line, run_time=1),
+            Write(dots, run_time=1),
+            Write(lines, run_time=1),
         )
         self.wait()
 
