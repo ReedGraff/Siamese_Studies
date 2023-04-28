@@ -139,12 +139,10 @@ class myNN(Scene):
 
 
 
-        dots = VGroup()
-        lines = VGroup()
-        for x,y in zip(followers, following):
-            point = axes.coords_to_point(x, y)
-            dots.add(Dot(point))
-            lines.add(axes.get_vertical_line(point, line_config={"dashed_ratio": 0.85}))
+        zipped = zip(followers, following)
+        print(zipped)
+        dots = VGroup([Dot(x, y) for x,y in zipped])
+        lines = VGroup(axes.get_vertical_line(axes.coords_to_point(x, y), line_config={"dashed_ratio": 0.85}) for x,y in zipped)
         self.play(
             Write(dots, run_time=1),
             Write(lines, run_time=1),
