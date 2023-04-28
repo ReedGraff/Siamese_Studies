@@ -119,33 +119,35 @@ class myNN(Scene):
 
 
         #Data Frame
-        df = pd.read_csv('../../Data/Instagram_Spam/whole.csv', sep=',', header=None)
-        followers = [int(x) for x in df[9].tolist()[1:11]]
-        following = [int(x) for x in df[10].tolist()[1:11]]
-
-
+        #df = pd.read_csv('C:/Users/range/CodingProjects/Python Projects/Data science/ML/Siamese_Studies/Data/Instagram_Spam/whole.csv', sep=',', header=None)
+        #followers = [int(x) for x in df[9].tolist()[1:11]]
+        #following = [int(x) for x in df[10].tolist()[1:11]]
+        followers = [1000, 2740, 159, 414, 151, 669987, 122, 1078, 1824, 12945, 9884, 1188, 945, 12033, 1962, 50374, 7007, 1128, 34670, 2338, 3516, 1809, 427, 759, 15338538, 109, 536, 121354, 2284, 186, 687, 966, 177, 744, 542073, 5315651, 267, 691, 120, 105, 890969, 361853, 3678, 92192, 12397719, 380510, 132, 162, 369, 1476][:3]
+        following = [955, 533, 98, 651, 126, 150, 177, 76, 2713, 813, 1173, 365, 583, 248, 2701, 900, 289, 694, 1878, 776, 999, 416, 470, 956, 61, 179, 665, 176, 130, 174, 1517, 952, 170, 967, 674, 2703, 328, 680, 112, 98, 11, 583, 1359, 16, 8, 0, 183, 208, 546, 666][:3]
 
         # defines the axes and linear function
-        axes = Axes(x_range=[min(followers), max(followers)], y_range=[min(following), max(following)], x_length=9, y_length=6)
+        axes = Axes(x_range=[min(followers), max(followers)], y_range=[min(following), max(following)], x_length=9, y_length=6).add_coordinates()
+        #axes = Axes(x_range=[0, 5], y_range=[0, 3], x_length=5, y_length=3).add_coordinates()
         func = axes.plot(lambda x: x, color=BLUE)
         # creates the T_label
-        t_label = axes.get_T_label(x_val=4, graph=func, label=Tex("x-value"))
+        # t_label = axes.get_T_label(x_val=4, graph=func, label=Tex("x-value"))
         self.play(
             Write(axes, run_time=1),
             Write(func, run_time=2),
-            Write(t_label, run_time=1),
+            #Write(t_label, run_time=1),
         )
         self.wait()
 
 
 
-        zipped = zip(followers, following)
-        print(zipped)
-        dots = VGroup([Dot(x, y) for x,y in zipped])
-        lines = VGroup(axes.get_vertical_line(axes.coords_to_point(x, y), line_config={"dashed_ratio": 0.85}) for x,y in zipped)
+        zipped = list(zip(followers, following))
+        dots = VGroup(*[Dot(axes.c2p(x, y)) for x,y in zipped])
+        #dots = VGroup(Dot(axes.c2p(5, 1)), Dot(axes.c2p(4, 2)), Dot(axes.c2p(3, 3)))
+
+        #lines = VGroup(*[axes.get_vertical_line(axes.coords_to_point(x, y), line_config={"dashed_ratio": 0.85}) for x,y in zipped])
         self.play(
-            Write(dots, run_time=1),
-            Write(lines, run_time=1),
+            Write(dots),
+            #lines
         )
         self.wait()
 
