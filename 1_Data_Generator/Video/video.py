@@ -161,9 +161,6 @@ class myNN(Scene):
         )
         self.wait()
 
-# there is definitely a better way than this...
-
-
 
         new_axes = Axes(
             x_range=[0, 10000, 1000],
